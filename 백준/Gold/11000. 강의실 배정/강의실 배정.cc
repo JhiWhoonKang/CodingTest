@@ -24,13 +24,12 @@ int main()
     sort(classes.begin(), classes.end());       // Si -> Bi 정렬
 
     priority_queue<int, vector<int>, greater<int>> pq;      // 숫자 큰 것 부터 우선순위 큐
-    for (const auto& studyClass : classes)
+    for (const auto studyClass : classes)
     {
         int startTime = studyClass.first;      // 시작 시간
         int endTime = studyClass.second;       // 종료 시간
 
-        // 기존 강의실 중 가장 먼저 끝나는 강의실 찾기
-        
+        // 기존 강의실 중 가장 먼저 끝나는 강의실 찾기    
         if (!pq.empty() && pq.top() <= startTime)      // T_i <= S_j 인 경우까지 가능(i: i 수업, j: j 수업)
         {
             pq.pop();
