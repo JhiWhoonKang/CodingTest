@@ -1,37 +1,46 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <algorithm>
+#include <queue>
 
 using namespace std;
 
-int main() {
-    int N;
+int main() 
+{
+    cin.tie(0); cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
+    int N;      // 수업 수
     cin >> N;
-    
-    vector<pair<int, int>> lectures(N);
-    for (int i = 0; i < N; i++) {
-        cin >> lectures[i].first >> lectures[i].second;
+
+    vector<pair<int, int>> classes(N);      // 강의실
+                                            // first: Si(시작 시간), second: Ti(종료 시간)
+
+    for (int i = 0; i < N; ++i)
+    {
+        cin >> classes[i].first >> classes[i].second;
     }
-    
-    // 시작 시간을 기준으로 정렬
-    sort(lectures.begin(), lectures.end());
-    
-    priority_queue<int, vector<int>, greater<int>> pq; // 최소 힙 (끝나는 시간 기준)
-    
-    for (const auto& lecture : lectures) {
-        int start = lecture.first;
-        int end = lecture.second;
+
+    sort(classes.begin(), classes.end());       // Si -> Bi 정렬
+
+    priority_queue<int, vector<int>, greater<int>> pq;      // 숫자 큰 것 부터 우선순위 큐
+    for (const auto& studyClass : classes)
+    {
+        int startTime = studyClass.first;      // 시작 시간
+        int endTime = studyClass.second;       // 종료 시간
+
+        // 기존 강의실 중 가장 먼저 끝나는 강의실 찾기
         
-        // 현재 강의의 시작 시간이 가장 빠른 종료 시간보다 크거나 같다면, 기존 강의실 사용 가능
-        if (!pq.empty() && pq.top() <= start) {
+        if (!pq.empty() && pq.top() <= startTime)      // T_i <= S_j 인 경우까지 가능(i: i 수업, j: j 수업)
+        {
             pq.pop();
         }
-        
-        pq.push(end); // 새 강의 추가
+
+        pq.push(endTime);
     }
-    
-    cout << pq.size() << endl; // 필요한 강의실 개수 출력
-    
+
+
+    cout << pq.size() << "\n";
+
     return 0;
 }
