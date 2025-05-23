@@ -9,7 +9,7 @@ long long solution(int n, vector<int> times) {
     long long answer = 0;
     
     
-    long long left = 1;
+    long long left = 0;
     long long right = (long long)*max_element(times.begin(), times.end()) * n;
     
     while(left <= right)
