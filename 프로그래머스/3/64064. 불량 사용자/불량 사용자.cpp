@@ -8,11 +8,23 @@ using namespace std;
 
 bool findId(const string& user, const string& banned)
 {
-    if (user.size() != banned.size()) return false;
-    for (int i = 0; i < user.size(); i++) {
-        if (banned[i] == '*') continue;
-        if (user[i] != banned[i]) return false;
+    if(user.size() != banned.size())
+    {
+        return false;
     }
+    
+    for(int i = 0; i < user.size(); i++)
+    {
+        if(banned[i] == '*')
+        {
+            continue;
+        }
+        if(user[i] != banned[i])
+        {
+            return false;
+        }
+    }
+    
     return true;
 }
 
@@ -42,8 +54,13 @@ void dfs(int idx, const vector<string>& userList, const vector<string>& bannedLi
 }
 
 int solution(vector<string> user_id, vector<string> banned_id) {
+    int answer = 0;
+    
     set<set<string>> allCases;
     set<string> selected;
+    
     dfs(0, user_id, banned_id, selected, allCases);
-    return allCases.size();
+    
+    answer = allCases.size();
+    return answer;
 }
