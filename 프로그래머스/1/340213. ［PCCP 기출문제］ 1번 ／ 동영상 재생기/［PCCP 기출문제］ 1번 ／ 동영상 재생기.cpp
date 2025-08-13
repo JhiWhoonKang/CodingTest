@@ -1,116 +1,96 @@
 #include <string>
 #include <vector>
-#include <iostream>
 
 using namespace std;
 
-int MtoS(int minute, int second)
+int hTm(const string& time)
 {
-    int totalTime;
-    return totalTime = minute * 60 + second;
+    const int hour = stoi(time.substr(0, 2));
+    const int min = stoi(time.substr(3, 2));
+    return hour * 60 + min;
 }
 
-string StoM(int second)
+string mTh(const int& time)
 {
-    string time = "";
-    int minute = second / 60;
-    int sec = second % 60;
+    const int hour = time / 60;
+    const int min = time % 60;
     
-    if(minute < 10)
+    string sHour = "";
+    string sMin = "";
+    
+    if(hour < 10)
     {
-        time += "0";
-        time += to_string(minute);
+        sHour += "0";
+        sHour += to_string(hour);
     }
     else
     {
-        time += to_string(minute);
+        sHour += to_string(hour);
     }
     
-    time += ":";
-    
-    if(sec < 10)
+    if(min < 10)
     {
-        time += "0";
-        time += to_string(sec);
+        sMin += "0";
+        sMin += to_string(min);
     }
     else
     {
-        time += to_string(sec);
+        sMin += to_string(min);
     }
     
-    return time;
+    
+    return sHour + ":" + sMin;
 }
 
 string solution(string video_len, string pos, string op_start, string op_end, vector<string> commands) {
     string answer = "";
     
-    int video_lenM = stoi(video_len.substr(0, 2));
-    int video_lenS = stoi(video_len.substr(3, 2));
+    #if 0
     
-    const int totalSec = MtoS(video_lenM, video_lenS);
+    명령어
+        - prev -> 10초 전으로 이동(현재 시간 < 10 => 00:00으로 이동)
+        - next -> 10초 후로 이동 (남은 시간 < 10 => 마지막 위치로 이동)
+        - 오프닝 건너뛰기(op_start <= 현재 재생 위치 <= op_end => op_end로 이동)        
+    #endif
     
-    int posM = stoi(pos.substr(0, 2));
-    int posS = stoi(pos.substr(3, 2));
+    int curPos = hTm(pos);
+    const int endPos = hTm(video_len);
     
-    int posSec = MtoS(posM, posS);
-    
-    const int op_startM = stoi(op_start.substr(0, 2));
-    const int op_startS = stoi(op_start.substr(3, 2));
-    
-    const int op_endM = stoi(op_end.substr(0, 2));
-    const int op_endS = stoi(op_end.substr(3, 2));
-    
-    const int openingStartPos = MtoS(op_startM, op_startS);
-    const int openingEndPos = MtoS(op_endM, op_endS);
-    
-    
-    for(const auto& cmd : commands)
+    for(const string& command : commands)
     {
-        if(cmd == "next")
-        {   
-            if(posSec >= openingStartPos && posSec <= openingEndPos)
-            {
-                posSec = openingEndPos;
-            }
-            
-            if(totalSec - (posSec + 10) < 10)
-            {
-                posSec = totalSec;
-            }
-            
-            else
-            {
-                posSec += 10;
-            }                                                
+        if((curPos >= hTm(op_start)) && (curPos <= hTm(op_end)))
+        {
+            curPos = hTm(op_end);
         }
         
-        else    // prev
-        {                  
-            if(posSec >= openingStartPos && posSec <= openingEndPos)
+        if(command == "prev")
+        {
+            if(curPos < 10)
             {
-                posSec = openingEndPos;
+                curPos = 0;
             }
-            
-            if((posSec - 10) < 0)
-            {
-                posSec = 0;
-            }            
-            
             else
             {
-                posSec -= 10;
-            }           
+                curPos -= 10;
+            }
+        }
+        else if(command == "next")
+        {
+            if(endPos - curPos < 10)
+            {
+                curPos = endPos;
+            }
+            else
+            {
+                curPos += 10;
+            }
         }
     }
     
-    if(posSec >= openingStartPos && posSec <= openingEndPos)
+    if((curPos >= hTm(op_start)) && (curPos <= hTm(op_end)))
     {
-        posSec = openingEndPos;
+        curPos = hTm(op_end);
     }
     
-    
-    answer = StoM(posSec);
-    
-    
-    return answer;
+    return mTh(curPos);
 }
